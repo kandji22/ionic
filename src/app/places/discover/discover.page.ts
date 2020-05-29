@@ -16,5 +16,8 @@ places: Place[];
   ngOnInit() {
 this.places = this.service.getPlace();
   }
+afil(evenement: CustomEvent<SegmentChangeEventDetail>){
+console.log(evenement.detail)
+}
 
 }

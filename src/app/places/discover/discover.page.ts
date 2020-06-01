@@ -1,7 +1,7 @@
 import { PlacesService } from './../../service/places.service';
 import { Place } from './../place.model';
 import { Component, OnInit } from '@angular/core';
-
+import { SegmentChangeEventDetail } from '@ionic/core';
 @Component({
   selector: 'app-discover',
   templateUrl: './discover.page.html',
@@ -16,8 +16,8 @@ places: Place[];
   ngOnInit() {
 this.places = this.service.getPlace();
   }
-afil(evenement: CustomEvent<SegmentChangeEventDetail>){
-console.log(evenement.detail)
+  onFilterUpdate(tenement: CustomEvent<SegmentChangeEventDetail>){
+console.log(tenement.detail)
 }
 
 }

@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceService {
-authentication = false;
-  constructor() { }
+authentication = true;
+  constructor( ) { }
 login(){
 this.authentication = true;
 }
@@ -16,4 +18,5 @@ logout(){
   getAuth(){
     return this.authentication;
   }
+
 }

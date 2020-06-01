@@ -9,17 +9,42 @@ import { ModalController } from '@ionic/angular';
 })
 export class CreateBookingComponent implements OnInit {
 @Input() placeTobook: Place
+@Input() selectedMode: 'select'|'random'
+startDate: string
+endDate: string
   constructor(
     private modal: ModalController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const availableFrom = new Date(this.placeTobook.availableFrom)
+    const availableTo = new Date(this.placeTobook.availableTo)
+    if (this.selectedMode ==='random'){
+      this.startDate=
+      new Date(
+        availableFrom.getTime() +
+          Math.random() *
+            (availableTo.getTime() -
+              7 * 24 * 60 * 60 * 1000 -
+              availableFrom.getTime())
+      ).toISOString();
 
-  onClose() {
+      this.endDate=
+      new Date(
+        new Date(this.startDate).getTime() +
+          Math.random() *
+            (new Date(this.startDate).getTime() +
+              6 * 24 * 60 * 60 * 1000 -
+              new Date(this.startDate).getTime())
+      ).toISOString();
+    }
+    } 
+
+  onCancel() {
 this.modal.dismiss('fermer modal','cancel')
   }
 
-  onAdd() {
+  onBookPlace() {
     this.modal.dismiss('ajouter book','confirm')
   }
 }

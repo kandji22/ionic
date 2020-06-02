@@ -1,11 +1,15 @@
+
+import { ServiceService } from './../auth/service.service';
 import { Place } from './../places/place.model';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import {take, map} from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  private places: Place[] = [
+  private places= new BehaviorSubject<Place[]>([
     new Place(
       'p1',
       'Manhattan Mansion',
@@ -14,6 +18,7 @@ export class PlacesService {
       149.99,
       new Date('2019-01-01'),
       new Date('2019-12-31'),
+      'abc'
     ),
     new Place(
       'p2',
@@ -23,6 +28,7 @@ export class PlacesService {
       189.99,
       new Date('2020-01-01'),
       new Date('2021-12-31'),
+      'abc'
     ),
     new Place(
       'p3',
@@ -32,16 +38,45 @@ export class PlacesService {
       99.99,
       new Date('2021-01-01'),
       new Date('2022-12-31'),
+      'abc'
 
     )
-  ];
-  getPlace() {
-    return [...this.places]
+  ])
+ 
+  get getPlace() {
+   return this.places.asObservable()
   }
   getOnlyPlace(id) {
-return this.places.find(place=>{
-  return place.id === id
-})
+    return this.getPlace.pipe(
+      take(1),
+      map(places => {
+        return { ...places.find(p => p.id === id) };
+      })
+    );
   }
-  constructor() { }
+  addPlace(
+    title: string,
+    description: string, 
+    price: number, 
+    availableFrom: Date,
+    availableTo: Date,
+      ){
+       const newplace= new Place(Math.random().toString(),
+       title,
+       description,
+       'https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200',
+       price,
+       availableFrom,
+       availableTo,
+      this.authService.getiduser()
+       );
+       this.getPlace.pipe(take(1)).subscribe(data=>{
+         this.places.next(data.concat(newplace))
+       })
+  }
+
+  constructor(
+    private authService : ServiceService,
+
+  ) { }
 }

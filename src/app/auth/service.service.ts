@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ServiceService {
+  iduser="abcdef"
 authentication = true;
   constructor( ) { }
 login(){
@@ -18,5 +19,7 @@ logout(){
   getAuth(){
     return this.authentication;
   }
-
+  getiduser(){
+    return this.iduser;
+  }
 }

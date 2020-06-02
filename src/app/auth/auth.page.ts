@@ -2,6 +2,7 @@ import { ServiceService } from './service.service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
+
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
@@ -29,8 +30,8 @@ export class AuthPage implements OnInit {
     else {
       //envoi a log in
     }
-this.service.login()
-this.load.create({keyboardClose:true,message:"loading.."}).then(l=>{
+    this.service.login()
+    this.load.create({keyboardClose:true,message:'loading..'}).then(l=> {
   l.present()
   setTimeout(
     ()=>{
@@ -44,4 +45,5 @@ this.load.create({keyboardClose:true,message:"loading.."}).then(l=>{
   isLogines() {
 this.islog =!this.islog
   }
+ 
 }

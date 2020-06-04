@@ -1,3 +1,4 @@
+import { ServiceService } from './../../auth/service.service';
 import { PlacesService } from './../../service/places.service';
 import { Place } from './../place.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -11,18 +12,31 @@ import { Subscription } from 'rxjs';
 export class DiscoverPage implements OnInit,OnDestroy{
   private subscribeplaces: Subscription
 places: Place[];
+relevantPlaces: Place[]
   constructor(
-    private service: PlacesService
+    private service: PlacesService,
+    private authService: ServiceService
   ) { }
 
   ngOnInit() {
 this.subscribeplaces = this.service.getPlace.subscribe(data =>{
   this.places=data
+  this.relevantPlaces = this.places
 });
+
   }
-  onFilterUpdate(tenement: CustomEvent<SegmentChangeEventDetail>){
-console.log(tenement.detail)
+  onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>){
+if (event.detail.value=="bookable"){
+this.relevantPlaces =this.relevantPlaces.filter((data)=>{
+return data.userId === this.authService.iduser
+})
+
 }
+else{
+this.relevantPlaces=this.places
+}
+}
+
 ngOnDestroy(){
   if (this.subscribeplaces) {
     this.subscribeplaces.unsubscribe()

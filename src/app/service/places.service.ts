@@ -2,8 +2,8 @@
 import { ServiceService } from './../auth/service.service';
 import { Place } from './../places/place.model';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import {take, map} from 'rxjs/operators'
+import { BehaviorSubject, pipe } from 'rxjs';
+import {take, map, delay, tap} from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -70,13 +70,38 @@ export class PlacesService {
        availableTo,
       this.authService.getiduser()
        );
-       this.getPlace.pipe(take(1)).subscribe(data=>{
-         this.places.next(data.concat(newplace))
+       return this.getPlace.pipe
+       (take(1),delay(2000),
+       tap(data => {     
+          this.places.next(data.concat(newplace))  
        })
+       )    
   }
 
   constructor(
     private authService : ServiceService,
 
   ) { }
+  updatePlace(placeId: string, title: string, description: string) {
+    return this.getPlace.pipe(
+      take(1),
+      delay(1000),
+      tap(places => {
+        const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
+        const updatedPlaces = [...places];
+        const oldPlace = updatedPlaces[updatedPlaceIndex];
+        updatedPlaces[updatedPlaceIndex] = new Place(
+          oldPlace.id,
+          title,
+          description,
+          oldPlace.imageUrl,
+          oldPlace.price,
+          oldPlace.availableFrom,
+          oldPlace.availableTo,
+          oldPlace.userId
+        );
+        this.places.next(updatedPlaces);
+      })
+    );
+  }
 }

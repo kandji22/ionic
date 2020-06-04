@@ -3,8 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Place } from '../../place.model';
-import { NavController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { NavController, LoadingController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -20,7 +20,9 @@ propertiesForm: FormGroup;
     private route: ActivatedRoute,
     private service: PlacesService,
     private navCtrl: NavController,
-    private formCtrl: FormBuilder
+    private formCtrl: FormBuilder,
+    private router: Router,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() { 
@@ -39,12 +41,33 @@ this.place=data
     })
   });
 }
+
+
 onUpdateOffer(){
   if(!this.propertiesForm.valid) {
     return
   }
-  console.log(this.propertiesForm)
+  this.loadingCtrl
+  .create({
+    message: 'Updating place...'
+  })
+  .then(loadingEl => {
+    loadingEl.present();
+    this.service
+      .updatePlace(
+        this.place.id,
+        this.propertiesForm.value.title,
+        this.propertiesForm.value.description
+      )
+      .subscribe(() => {
+        loadingEl.dismiss();
+        this.propertiesForm.reset();
+        this.router.navigate(['/places/tabs/offers']);
+      });
+  });
 }
+
+
 ngOnDestroy() {
   this.subsplace.unsubscribe()
 }

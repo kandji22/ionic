@@ -17,7 +17,8 @@ endDate: string;
 
 
   constructor(
-    private modal: ModalController
+    private modal: ModalController,
+  
   ) { }
 
 

@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './discover.page.html',
   styleUrls: ['./discover.page.scss'],
 })
-export class DiscoverPage implements OnInit,OnDestroy{
+export class DiscoverPage implements OnInit, OnDestroy{
+  isLoading = false
   private subscribeplaces: Subscription
 places: Place[];
 relevantPlaces: Place[]
@@ -19,21 +20,26 @@ relevantPlaces: Place[]
   ) { }
 
   ngOnInit() {
-this.subscribeplaces = this.service.getPlace.subscribe(data =>{
-  this.places=data
+this.subscribeplaces = this.service.getPlace.subscribe(data => {
+  this.places = data
   this.relevantPlaces = this.places
 });
-
+  }
+  ionViewWillEnter(){
+    this.isLoading = true
+    this.service.fetchPlaces().subscribe(() => {
+     this.isLoading = false
+   })
   }
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>){
-if (event.detail.value=="bookable"){
-this.relevantPlaces =this.relevantPlaces.filter((data)=>{
+if (event.detail.value == "bookable"){
+this.relevantPlaces = this.relevantPlaces.filter((data) => {
 return data.userId === this.authService.iduser
 })
 
 }
 else{
-this.relevantPlaces=this.places
+this.relevantPlaces = this.places
 }
 }
 
@@ -42,4 +48,5 @@ ngOnDestroy(){
     this.subscribeplaces.unsubscribe()
   }
 }
+
 }

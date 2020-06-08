@@ -1,5 +1,5 @@
 import { PlacesService } from './../../../service/places.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Place } from '../../place.model';
@@ -12,63 +12,71 @@ import { Subscription } from 'rxjs';
   templateUrl: './edit-offer.page.html',
   styleUrls: ['./edit-offer.page.scss'],
 })
-export class EditOfferPage implements OnInit,OnDestroy {
-place: Place;
-private subsplace: Subscription
-propertiesForm: FormGroup;
+export class EditOfferPage implements OnInit, OnDestroy {
+  place: Place;
+  form: FormGroup;
+  private placeSub: Subscription;
+
   constructor(
     private route: ActivatedRoute,
-    private service: PlacesService,
+    private placesService: PlacesService,
     private navCtrl: NavController,
-    private formCtrl: FormBuilder,
     private router: Router,
     private loadingCtrl: LoadingController
   ) {}
 
-  ngOnInit() { 
+  ngOnInit() {
+    
     this.route.paramMap.subscribe(paramMap => {
-    if (!paramMap.has('placeId')) {
-      this.navCtrl.navigateBack('/places/tabs/offers');
+      if (!paramMap.has('placeId')) {
+        this.navCtrl.navigateBack('/places/tabs/offers');
+        return;
+      }
+      this.placeSub = this.placesService
+        .getOnlyPlace (paramMap.get('placeId'))
+        .subscribe(place => {
+          this.place = place;
+          this.form = new FormGroup({
+            title: new FormControl(this.place.title, {
+              updateOn: 'blur',
+              validators: [Validators.required]
+            }),
+            description: new FormControl(this.place.description, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.maxLength(180)]
+            })
+          });
+        })
+    });
+  }
+
+  onUpdateOffer() {
+    if (!this.form.valid) {
       return;
     }
-    this.subsplace = this.service.getOnlyPlace(paramMap.get('placeId')).subscribe(data =>{
-this.place=data
-    })
-
-    this.propertiesForm= this.formCtrl.group({
-      title: [this.place.title,Validators.required],
-      description: [this.place.description,[Validators.required,Validators.maxLength(180)]]    
-    })
-  });
-}
-
-
-onUpdateOffer(){
-  if(!this.propertiesForm.valid) {
-    return
-  }
-  this.loadingCtrl
-  .create({
-    message: 'Updating place...'
-  })
-  .then(loadingEl => {
-    loadingEl.present();
-    this.service
-      .updatePlace(
-        this.place.id,
-        this.propertiesForm.value.title,
-        this.propertiesForm.value.description
-      )
-      .subscribe(() => {
-        loadingEl.dismiss();
-        this.propertiesForm.reset();
-        this.router.navigate(['/places/tabs/offers']);
+    this.loadingCtrl
+      .create({
+        message: 'Updating place...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.placesService
+          .updatePlace(
+            this.place.id,
+            this.form.value.title,
+            this.form.value.description
+          )
+          .subscribe(() => {
+            loadingEl.dismiss();
+            this.form.reset();
+            this.router.navigate(['/places/tabs/offers']);
+          });
       });
-  });
-}
+  }
 
-
-ngOnDestroy() {
-  this.subsplace.unsubscribe()
-}
+  ngOnDestroy() {
+    if (this.placeSub) {
+      this.placeSub.unsubscribe();
+    }
+  }
 }

@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class OffersPage implements OnInit,OnDestroy {
   private subsplaces: Subscription
 places: Place[]
+isLoading= false
   constructor(
    private service: PlacesService,
    private route: Router
@@ -23,9 +24,15 @@ places: Place[]
       this.places=data
     })
   }
+  ionViewWillEnter(){
+    this.isLoading=true
+   this.service.fetchPlaces().subscribe(()=>{
+     this.isLoading=false
+   })
+  }
   onEdit(id: string, slider: IonItemSliding){
     slider.close()
-    this.route.navigateByUrl('/places/tabs/offers/');
+    this.route.navigateByUrl('/places/tabs/offers/'+id);
       }
       ngOnDestroy(){
         if(this.subsplaces){

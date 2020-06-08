@@ -19,10 +19,14 @@ booksupSub: Subscription
   ) { }
 
   ngOnInit() {
-    this.bookingSub= this.bookingService.getbookings.subscribe((data)=>{
+    this.bookingSub= this.bookingService.bookings.subscribe((data)=>{
       this.loadedBooking=data
     })
   }
+ionViewWillEnter(){
+ this.bookingService.fetchingBooking().subscribe()
+}
+
 ngOnDestroy(){
   this.bookingSub.unsubscribe()
 }
@@ -30,7 +34,7 @@ onCancelBooking(offerId: string, slidingEl: IonItemSliding) {
   this.loadCtrl.create({message: 'Loading..'
   }).then(l=>{
     l.present()
-    this.booksupSub=this.bookingService.cancel(offerId).subscribe(()=>{
+    this.booksupSub=this.bookingService.cancelBooking(offerId).subscribe(()=>{
       l.dismiss()
       slidingEl.close();
     })

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/offers"></ion-back-button>
     </ion-buttons>
-    <ion-title>New Offer</ion-title>
+    <ion-title>New Offer </ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="onCreateOffer()" [disabled]="!propertiesForm.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
@@ -66,6 +66,11 @@
       </ion-item>
     </ion-col>
   </ion-row>
+  <app-picker (eventcoordonne)="onCoordonneCreate($event)"> 
+
+  </app-picker>
+
 </ion-grid>
 </form>
+
 </ion-content>

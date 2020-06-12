@@ -1,3 +1,4 @@
+import { Location } from './../../../carte/picker/location.model';
 import { Router } from '@angular/router';
 import { PlacesService } from 'src/app/service/places.service';
 import { Component, OnInit } from '@angular/core';
@@ -10,6 +11,7 @@ import { LoadingController } from '@ionic/angular';
   styleUrls: ['./new-offer.page.scss'],
 })
 export class NewOfferPage implements OnInit {
+  coordonn: Location
   propertiesForm: FormGroup;
   constructor(
     private formbuilder: FormBuilder,
@@ -27,7 +29,8 @@ export class NewOfferPage implements OnInit {
        description: ['',[Validators.required,Validators.maxLength(180)]],
         price: ['',[Validators.required,Validators.min(1)]],
         dateFrom: ['',Validators.required],
-        dateTo :['',Validators.required]
+        dateTo :['',Validators.required],
+        location: ['', Validators.required]
      })
   }
   onCreateOffer(){
@@ -44,7 +47,8 @@ export class NewOfferPage implements OnInit {
         this.propertiesForm.value.description,
         +this.propertiesForm.value.price, 
         new Date(this.propertiesForm.value.dateFrom),
-        new Date(this.propertiesForm.value.dateTo)
+        new Date(this.propertiesForm.value.dateTo),
+        this.propertiesForm.value.Location
         ).subscribe(()=>{
           l.dismiss()
           this.propertiesForm.reset()
@@ -52,6 +56,12 @@ export class NewOfferPage implements OnInit {
         })
     })
 
+  }
+  onCoordonneCreate($event)
+  {
+this.coordonn=$event
+console.log(this.coordonn)
+this.propertiesForm.patchValue({ location: this.coordonn });
   }
 
 }

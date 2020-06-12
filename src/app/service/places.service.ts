@@ -1,3 +1,4 @@
+import { Location } from './../carte/picker/location.model';
 
 import { ServiceService } from './../auth/service.service';
 import { Place } from './../places/place.model';
@@ -14,7 +15,8 @@ description: string,
 imageUrl: string,
 price: number,
 title: string,
-userId: string
+userId: string,
+location: Location
 }
 @Injectable({
   providedIn: 'root'
@@ -72,7 +74,8 @@ export class PlacesService {
          placeData.price,
          new Date(placeData.availableFrom),
          new Date(placeData.availableTo),
-         placeData.userId
+         placeData.userId,
+         placeData.location
        )
      })
    )
@@ -83,6 +86,7 @@ export class PlacesService {
     price: number, 
     availableFrom: Date,
     availableTo: Date,
+    location: Location
       ){
         let generateId: string
         const newplace= new Place(Math.random().toString(),
@@ -92,7 +96,8 @@ export class PlacesService {
        price,
        availableFrom,
        availableTo,
-      this.authService.getiduser()
+      this.authService.getiduser(),
+      location
        );
        //return this.getPlace.pipe
       // (take(1),delay(2000),
@@ -145,7 +150,8 @@ export class PlacesService {
           oldPlace.price,
           oldPlace.availableFrom,
           oldPlace.availableTo,
-          oldPlace.userId
+          oldPlace.userId,
+          oldPlace.location
         );
         return this.http.put(`https://ionic-angular-ed8c9.firebaseio.com/places/${placeId}.json`,{
         ...updatedPlaces[updatedPlaceIndex], id: null
@@ -178,7 +184,8 @@ export class PlacesService {
                   resData[key].price,
                   new Date(resData[key].availableFrom),
                   new Date(resData[key].availableTo),
-                  resData[key].userId
+                  resData[key].userId,
+                  resData[key].location
                 )
               );
             }

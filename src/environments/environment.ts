@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  maxBoxKey: 'pk.eyJ1Ijoia2FuZGppIiwiYSI6ImNrYjd6cWcxYzBhcnkzM3F6YnpsZzN2bWkifQ.PG8PU3Ker3wGAZgJbFQWAw'
 };
 
 /*

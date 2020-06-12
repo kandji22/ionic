@@ -32,7 +32,7 @@ isLoading= false
   }
   onEdit(id: string, slider: IonItemSliding){
     slider.close()
-    this.route.navigateByUrl('/places/tabs/offers/'+id);
+    this.route.navigateByUrl('/places/tabs/offers/edit/'+id);
       }
       ngOnDestroy(){
         if(this.subsplaces){

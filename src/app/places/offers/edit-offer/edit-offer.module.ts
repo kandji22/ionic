@@ -8,13 +8,15 @@ import { EditOfferPageRoutingModule } from './edit-offer-routing.module';
 
 import { EditOfferPage } from './edit-offer.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     EditOfferPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+ 
   ],
   declarations: [EditOfferPage]
 })
